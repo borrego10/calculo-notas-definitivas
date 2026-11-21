@@ -161,5 +161,10 @@ rutas relativas. No requiere comando de compilación.
 
 - URL pública: https://calculo-notas-definitivas-nkemjovyr-herreraherrera45422-prog.vercel.app/
 - Método: publicación de carpeta estática en Vercel.
+- Se desactivó Vercel Authentication para permitir acceso público sin cuenta,
+  aprobación ni pertenencia al equipo.
+- Cualquier persona con la URL puede abrir la aplicación. Los datos se guardan
+  localmente en el navegador de cada visitante; no ingreses información
+  confidencial.
 - La integración automática GitHub–Vercel no quedó configurada; una nueva
   versión requiere volver a publicar los archivos del proyecto.
