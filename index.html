@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#102a43">
+    <meta
+      name="description"
+      content="Estructura inicial del Software de Cálculo de Notas Definitivas."
+    >
+    <title>Notas definitivas | Panel académico</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="Notas definitivas, inicio">
+          <span class="brand-mark" aria-hidden="true">ND</span>
+          <span class="brand-copy">
+            <span class="brand-name">Notas definitivas</span>
+            <span class="brand-caption">Herramienta académica</span>
+          </span>
+        </a>
+        <span class="header-label">Cálculo ponderado</span>
+      </header>
+
+      <main class="main-content">
+        <section
+          id="view-access"
+          class="view access-view"
+          aria-labelledby="access-title"
+        >
+          <div class="access-intro">
+            <p class="eyebrow">Software de Cálculo de Notas Definitivas</p>
+            <h1 id="access-title">Consulta tu resultado académico</h1>
+            <p class="intro-copy">
+              Ingresa con tu número de documento para calcular y revisar tus
+              notas en un solo lugar.
+            </p>
+          </div>
+
+          <div class="card access-card">
+            <div class="card-heading">
+              <span class="step-indicator" aria-hidden="true">01</span>
+              <div>
+                <h2>Identificación</h2>
+                <p>Usaremos tu documento para asociar tus cálculos.</p>
+              </div>
+            </div>
+
+            <form id="form-access" novalidate>
+              <fieldset disabled>
+                <label for="student-document">Número de documento</label>
+                <input
+                  id="student-document"
+                  name="documento"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="off"
+                  minlength="5"
+                  maxlength="15"
+                  pattern="[0-9]{5,15}"
+                  aria-describedby="document-help access-message"
+                  placeholder="Ej. 1234567"
+                >
+                <p id="document-help" class="field-help">
+                  Ingresa entre 5 y 15 dígitos, sin espacios.
+                </p>
+                <button class="button button-primary" type="submit">
+                  Ingresar
+                  <span aria-hidden="true">→</span>
+                </button>
+              </fieldset>
+              <p
+                id="access-message"
+                class="notice notice-info"
+                role="status"
+                aria-live="polite"
+              >
+                La identificación se habilitará en las siguientes fases.
+              </p>
+            </form>
+
+            <p class="privacy-note">
+              El documento solo identifica tu espacio de trabajo; no es una
+              autenticación segura ni reemplaza las credenciales de una
+              institución.
+            </p>
+          </div>
+
+          <p class="page-note">Proyecto académico · Fase 1: estructura base</p>
+        </section>
+
+        <section
+          id="view-configuration"
+          class="view workspace-view"
+          aria-labelledby="configuration-title"
+          hidden
+        >
+          <div class="view-heading">
+            <p class="eyebrow">Configuración</p>
+            <h1 id="configuration-title">¿Cuántas evaluaciones tienes?</h1>
+            <p>Elige una cantidad entre 1 y 20 para preparar el cálculo.</p>
+          </div>
+          <div class="card">
+            <form id="form-configuration" novalidate>
+              <fieldset disabled>
+                <label for="evaluation-count">Cantidad de evaluaciones</label>
+                <input
+                  id="evaluation-count"
+                  name="cantidad"
+                  type="number"
+                  min="1"
+                  max="20"
+                  step="1"
+                  inputmode="numeric"
+                  aria-describedby="configuration-message"
+                >
+                <button class="button button-primary" type="submit">
+                  Continuar
+                </button>
+                <button class="button button-secondary" type="button">
+                  Ver historial
+                </button>
+              </fieldset>
+              <p
+                id="configuration-message"
+                class="notice notice-info"
+                role="status"
+                aria-live="polite"
+              >
+                La configuración estará disponible en una fase posterior.
+              </p>
+            </form>
+          </div>
+        </section>
+
+        <section
+          id="view-evaluations"
+          class="view workspace-view"
+          aria-labelledby="evaluations-title"
+          hidden
+        >
+          <div class="view-heading">
+            <p class="eyebrow">Registro de evaluaciones</p>
+            <h1 id="evaluations-title">Ingresa tus notas y porcentajes</h1>
+            <p>La suma de los porcentajes debe completar el 100%.</p>
+          </div>
+          <div class="card">
+            <div
+              id="evaluations-list"
+              class="empty-state"
+              aria-live="polite"
+            >
+              <span class="empty-state-mark" aria-hidden="true">—</span>
+              <p>Los campos de evaluación se generarán dinámicamente.</p>
+            </div>
+            <p
+              id="evaluations-message"
+              class="notice notice-info"
+              role="status"
+              aria-live="polite"
+            >
+              El registro de notas estará disponible en una fase posterior.
+            </p>
+            <div class="button-row">
+              <button class="button button-secondary" type="button" disabled>
+                Cambiar cantidad
+              </button>
+              <button class="button button-primary" type="button" disabled>
+                Calcular definitiva
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="view-result"
+          class="view workspace-view"
+          aria-labelledby="result-title"
+          hidden
+        >
+          <div class="view-heading">
+            <p class="eyebrow">Resultado</p>
+            <h1 id="result-title">Tu nota definitiva</h1>
+          </div>
+          <div class="card result-card">
+            <p class="result-label">Definitiva</p>
+            <p class="result-value" aria-live="polite">—</p>
+            <p class="result-status">El estado se mostrará aquí.</p>
+            <p class="notice notice-info" role="status" aria-live="polite">
+              El cálculo y su almacenamiento se habilitarán en una fase
+              posterior.
+            </p>
+            <div class="button-row">
+              <button class="button button-primary" type="button" disabled>
+                Nuevo cálculo
+              </button>
+              <button class="button button-secondary" type="button" disabled>
+                Ver historial
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="view-history"
+          class="view workspace-view"
+          aria-labelledby="history-title"
+          hidden
+        >
+          <div class="view-heading">
+            <p class="eyebrow">Historial</p>
+            <h1 id="history-title">Tus cálculos anteriores</h1>
+            <p>Solo se mostrarán los resultados asociados a tu documento.</p>
+          </div>
+          <div class="card">
+            <div id="history-list" class="empty-state" aria-live="polite">
+              <span class="empty-state-mark" aria-hidden="true">—</span>
+              <p>Aún no hay cálculos para mostrar.</p>
+            </div>
+            <p id="history-message" class="notice notice-info" role="status">
+              La consulta del historial estará disponible en una fase
+              posterior.
+            </p>
+            <button class="button button-secondary" type="button" disabled>
+              Volver
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Notas definitivas</span>
+        <span>Los datos del proyecto se almacenarán localmente en el navegador.</span>
+      </footer>
+    </div>
+  </body>
+</html>
