@@ -3,9 +3,9 @@
 Aplicación web académica para calcular promedios ponderados y consultar el
 historial de resultados de un estudiante en el mismo navegador.
 
-> **Estado del proyecto:** Fase 5 — cálculo ponderado, resultados y consulta
-> del historial implementados. La publicación y regresión en Vercel corresponden
-> a la Fase 6.
+> **Estado del proyecto:** Fase 6 — aplicación desplegada en Vercel. Se ejecutó
+> una prueba de humo en producción; la regresión completa PR-01 a PR-32 queda
+> pendiente.
 
 ## Objetivo
 
@@ -143,7 +143,9 @@ sintácticamente los módulos JavaScript y se probaron el cálculo de ejemplo
 (4.05), los tres casos de redondeo PR-17, el límite de aprobación, el bloqueo de
 porcentajes distintos de 100, el guardado/consulta del historial y el
 aislamiento entre estudiantes. No todas las PR-01 a PR-32 han sido ejecutadas
-en producción; la regresión completa en la URL pública corresponde a la Fase 6.
+en producción. En Vercel se comprobó la carga, identificación, cálculo de 3.00,
+guardado, consulta de historial y cierre de sesión; no se ejecutó la regresión
+completa PR-01 a PR-32 en producción.
 
 ## Limitaciones conocidas
 
@@ -155,5 +157,9 @@ en producción; la regresión completa en la URL pública corresponde a la Fase 
 ## Despliegue
 
 La aplicación se despliega como sitio estático, con `index.html` en la raíz y
-rutas relativas. La publicación y verificación en Vercel corresponden a la
-Fase 6.
+rutas relativas. No requiere comando de compilación.
+
+- URL pública: https://calculo-notas-definitivas-nkemjovyr-herreraherrera45422-prog.vercel.app/
+- Método: publicación de carpeta estática en Vercel.
+- La integración automática GitHub–Vercel no quedó configurada; una nueva
+  versión requiere volver a publicar los archivos del proyecto.
