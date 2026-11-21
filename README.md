@@ -3,9 +3,9 @@
 Aplicación web académica para calcular promedios ponderados y consultar el
 historial de resultados de un estudiante en el mismo navegador.
 
-> **Estado del proyecto:** Fase 1 — estructura base. Las pantallas son una
-> maqueta accesible; identificación, cálculos, almacenamiento e historial aún
-> no están implementados.
+> **Estado del proyecto:** Fase 2 — base IndexedDB lista. La interfaz continúa
+> siendo una maqueta; identificación, sesión, cálculos e historial se
+> implementarán en sus fases correspondientes.
 
 ## Objetivo
 
@@ -22,8 +22,9 @@ consultar el historial local.
 - Cálculo ponderado, redondeo a dos decimales y estado académico.
 - Historial local, independiente por estudiante y de solo lectura.
 
-Estas funcionalidades se implementarán en sus fases correspondientes; no deben
-considerarse disponibles en esta estructura inicial.
+La Fase 2 implementa la apertura de la base, la creación del esquema y las
+operaciones de persistencia. Las funcionalidades de estudiante, sesión,
+validación de notas, cálculo e historial aún no están disponibles.
 
 ## Tecnologías y arquitectura
 
@@ -77,14 +78,19 @@ deben servirse por HTTP; no se debe abrir `index.html` con una dirección
 La extensión es solo una herramienta de desarrollo local; no es dependencia de
 la aplicación ni se descarga al desplegarla.
 
-## Modelo de datos previsto
+## Modelo de datos implementado
 
-La Fase 2 definirá la base IndexedDB `NotasDefinitivasDB` (versión 1):
+La aplicación abre la base IndexedDB `NotasDefinitivasDB` (versión 1):
 
-- `usuarios`: clave primaria `documento` y fecha de registro.
+- `usuarios`: clave primaria `documento` y `fechaRegistro` en formato ISO 8601.
 - `calculos`: clave autoincremental `id`, documento del estudiante, fecha,
-  evaluaciones, definitiva y estado. El índice `idx_documento` permitirá
-  consultar únicamente el historial del estudiante activo.
+  notas, definitiva y estado. El índice no único `idx_documento` consulta los
+  registros asociados a un documento.
+- Operaciones disponibles: abrir la base; consultar y registrar usuarios;
+  insertar cálculos independientes; y consultar cálculos por documento.
+
+Las escrituras se resuelven al completarse la transacción. No se exponen
+operaciones de edición o borrado de cálculos.
 
 Los datos permanecerán en el navegador de cada usuario; no se sincronizan entre
 dispositivos.
@@ -104,14 +110,16 @@ dispositivos.
 
 El Documento Maestro define 32 pruebas funcionales (PR-01 a PR-32) para
 identificación, sesión, entradas, cálculo, redondeo, persistencia, historial,
-aislamiento y fallos de almacenamiento. Se ejecutarán por fase. En esta Fase 1
-solo se verifica la estructura, la carga por HTTP y el estado visual inicial;
-no se reportan aún como probadas las funcionalidades pendientes.
+aislamiento y fallos de almacenamiento. Se ejecutarán por fase. En esta Fase 2
+se verifican el esquema IndexedDB, reapertura, operaciones de lectura/escritura,
+aislamiento por índice y los mensajes ante falta de IndexedDB. No se reportan
+aún como probadas las funcionalidades pendientes.
 
 ## Limitaciones conocidas
 
 - La estructura visual no ejecuta todavía el flujo de la aplicación.
-- No existe aún acceso a IndexedDB ni persistencia de sesión.
+- Identificación, persistencia de sesión, validación, cálculo e historial están
+  pendientes.
 - Los datos futuros dependerán del navegador y dispositivo donde se creen.
 - Identificarse por documento no constituye autenticación segura.
 
