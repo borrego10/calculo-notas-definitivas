@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#102a43">
     <meta
       name="description"
-      content="Estructura inicial del Software de Cálculo de Notas Definitivas."
+      content="Aplicación académica local para organizar y calcular notas definitivas."
     >
     <title>Notas definitivas | Panel académico</title>
     <link rel="stylesheet" href="css/styles.css">
@@ -50,7 +50,7 @@
             </div>
 
             <form id="form-access" novalidate>
-              <fieldset disabled>
+              <fieldset>
                 <label for="student-document">Número de documento</label>
                 <input
                   id="student-document"
@@ -89,7 +89,7 @@
             </p>
           </div>
 
-          <p class="page-note">Proyecto académico · Fase 1: estructura base</p>
+          <p class="page-note">Proyecto académico · Acceso local por documento</p>
         </section>
 
         <section
@@ -103,6 +103,25 @@
             <h1 id="configuration-title">¿Cuántas evaluaciones tienes?</h1>
             <p>Elige una cantidad entre 1 y 20 para preparar el cálculo.</p>
           </div>
+          <div class="session-panel">
+            <p>
+              <span class="session-label">Documento activo</span>
+              <strong id="active-document"></strong>
+            </p>
+            <button
+              id="logout-button"
+              class="button button-secondary"
+              type="button"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+          <p
+            id="session-message"
+            class="notice notice-info session-message"
+            role="status"
+            aria-live="polite"
+          ></p>
           <div class="card">
             <form id="form-configuration" novalidate>
               <fieldset disabled>

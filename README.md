@@ -3,9 +3,8 @@
 Aplicación web académica para calcular promedios ponderados y consultar el
 historial de resultados de un estudiante en el mismo navegador.
 
-> **Estado del proyecto:** Fase 2 — base IndexedDB lista. La interfaz continúa
-> siendo una maqueta; identificación, sesión, cálculos e historial se
-> implementarán en sus fases correspondientes.
+> **Estado del proyecto:** Fase 3 — IndexedDB, identificación y sesión local
+> implementadas. La configuración, el cálculo y el historial siguen pendientes.
 
 ## Objetivo
 
@@ -22,9 +21,9 @@ consultar el historial local.
 - Cálculo ponderado, redondeo a dos decimales y estado académico.
 - Historial local, independiente por estudiante y de solo lectura.
 
-La Fase 2 implementa la apertura de la base, la creación del esquema y las
-operaciones de persistencia. Las funcionalidades de estudiante, sesión,
-validación de notas, cálculo e historial aún no están disponibles.
+La Fase 2 implementa IndexedDB; la Fase 3 añade identificación, registro
+automático y sesión por pestaña. La configuración de evaluaciones, el cálculo
+y el historial aún no están disponibles.
 
 ## Tecnologías y arquitectura
 
@@ -32,6 +31,8 @@ validación de notas, cálculo e historial aún no están disponibles.
 - JavaScript Vanilla ES6 mediante módulos.
 - IndexedDB para estudiantes y cálculos.
 - `sessionStorage` únicamente para el documento de la sesión activa.
+- Validación del documento de 5 a 15 dígitos.
+- Recuperación de la sesión al recargar la misma pestaña.
 - Vercel como destino de despliegue estático.
 
 No se incorporan frameworks, librerías externas, backend ni almacenamiento
@@ -95,6 +96,18 @@ operaciones de edición o borrado de cálculos.
 Los datos permanecerán en el navegador de cada usuario; no se sincronizan entre
 dispositivos.
 
+## Identificación y sesión
+
+El estudiante se identifica con un documento de 5 a 15 dígitos, sin espacios.
+Si aún no existe en `usuarios`, se registra con `fechaRegistro` ISO 8601. La
+sesión guarda únicamente el documento bajo la clave `documentoActivo` en
+`sessionStorage`; al recargar se comprueba el registro en IndexedDB. Cerrar
+sesión elimina esa clave, pero conserva al estudiante y los cálculos.
+
+Si `sessionStorage` no está disponible, los estados que requieren sesión se
+bloquean y se muestra el mensaje de almacenamiento. Esta identificación no es
+autenticación segura.
+
 ## Reglas de negocio previstas
 
 - Entre 1 y 20 evaluaciones enteras.
@@ -110,16 +123,17 @@ dispositivos.
 
 El Documento Maestro define 32 pruebas funcionales (PR-01 a PR-32) para
 identificación, sesión, entradas, cálculo, redondeo, persistencia, historial,
-aislamiento y fallos de almacenamiento. Se ejecutarán por fase. En esta Fase 2
-se verifican el esquema IndexedDB, reapertura, operaciones de lectura/escritura,
-aislamiento por índice y los mensajes ante falta de IndexedDB. No se reportan
-aún como probadas las funcionalidades pendientes.
+aislamiento y fallos de almacenamiento. En la Fase 2 se verificaron el esquema
+IndexedDB, reapertura, operaciones de lectura/escritura, aislamiento por índice
+y fallos de almacenamiento. En la Fase 3 se ejecutaron PR-01 a PR-07 y PR-09 a
+PR-10; PR-08 se verificó parcialmente para cierre, recarga y reingreso. La
+conservación del historial indicada por PR-08 queda pendiente hasta la Fase 5.
+No se reportan aún como probadas las funcionalidades pendientes.
 
 ## Limitaciones conocidas
 
-- La estructura visual no ejecuta todavía el flujo de la aplicación.
-- Identificación, persistencia de sesión, validación, cálculo e historial están
-  pendientes.
+- La configuración, el registro de notas, el cálculo y el historial siguen
+  como vistas estáticas hasta sus fases correspondientes.
 - Los datos futuros dependerán del navegador y dispositivo donde se creen.
 - Identificarse por documento no constituye autenticación segura.
 
