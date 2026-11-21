@@ -3,8 +3,9 @@
 Aplicación web académica para calcular promedios ponderados y consultar el
 historial de resultados de un estudiante en el mismo navegador.
 
-> **Estado del proyecto:** Fase 3 — IndexedDB, identificación y sesión local
-> implementadas. La configuración, el cálculo y el historial siguen pendientes.
+> **Estado del proyecto:** Fase 4 — IndexedDB, identificación, sesión,
+> configuración y validaciones dinámicas implementadas. El cálculo y el
+> historial siguen pendientes.
 
 ## Objetivo
 
@@ -21,9 +22,9 @@ consultar el historial local.
 - Cálculo ponderado, redondeo a dos decimales y estado académico.
 - Historial local, independiente por estudiante y de solo lectura.
 
-La Fase 2 implementa IndexedDB; la Fase 3 añade identificación, registro
-automático y sesión por pestaña. La configuración de evaluaciones, el cálculo
-y el historial aún no están disponibles.
+Las Fases 2 a 4 implementan IndexedDB, identificación y sesión por pestaña,
+configuración de evaluaciones, captura dinámica y validaciones en tiempo real.
+El cálculo y el historial aún no están disponibles.
 
 ## Tecnologías y arquitectura
 
@@ -33,6 +34,9 @@ y el historial aún no están disponibles.
 - `sessionStorage` únicamente para el documento de la sesión activa.
 - Validación del documento de 5 a 15 dígitos.
 - Recuperación de la sesión al recargar la misma pestaña.
+- Evaluaciones de 1 a 20, notas de 0 a 5 y porcentajes entre 0 y 100.
+- Notas con decimales sin límite propio; porcentajes con hasta dos decimales.
+- Acepta punto o coma como separador decimal en los campos numéricos.
 - Vercel como destino de despliegue estático.
 
 No se incorporan frameworks, librerías externas, backend ni almacenamiento
@@ -41,7 +45,9 @@ principal en `localStorage`.
 La aplicación se organiza en capas: `js/ui/` para presentación,
 `js/services/` para reglas y operaciones de negocio, `js/database/` para acceso
 a IndexedDB, `js/utils/` para validaciones reutilizables y `js/main.js` para
-inicialización y navegación.
+inicialización y navegación. Las reglas de evaluación residen en
+`js/services/notaService.js`; la interfaz de configuración y captura en
+`js/ui/evaluaciones.js`.
 
 ## Estructura inicial
 
@@ -55,13 +61,19 @@ calculo-notas-definitivas/
 └── js/
     ├── main.js
     ├── database/
+    │   └── db.js
     ├── services/
+    │   ├── notaService.js
+    │   └── usuarioService.js
     ├── ui/
+    │   ├── evaluaciones.js
+    │   └── login.js
     └── utils/
+        └── validaciones.js
 ```
 
-Los módulos de las capas se irán agregando en las fases aprobadas; las carpetas
-vacías se conservan en Git mediante archivos `.gitkeep`.
+Los módulos pendientes de las siguientes fases se incorporarán conforme se
+autoricen.
 
 ## Requisitos para ejecutar
 
@@ -128,12 +140,15 @@ IndexedDB, reapertura, operaciones de lectura/escritura, aislamiento por índice
 y fallos de almacenamiento. En la Fase 3 se ejecutaron PR-01 a PR-07 y PR-09 a
 PR-10; PR-08 se verificó parcialmente para cierre, recarga y reingreso. La
 conservación del historial indicada por PR-08 queda pendiente hasta la Fase 5.
-No se reportan aún como probadas las funcionalidades pendientes.
+En la Fase 4 se ejecutaron PR-11 a PR-14 y las validaciones de campos de PR-18.
+Las comprobaciones de cálculo de PR-15, PR-16 y PR-18 quedan pendientes hasta
+que el cálculo se implemente en la Fase 5. No se reportan como probadas las
+funcionalidades pendientes.
 
 ## Limitaciones conocidas
 
-- La configuración, el registro de notas, el cálculo y el historial siguen
-  como vistas estáticas hasta sus fases correspondientes.
+- El cálculo, los resultados y el historial se habilitarán en la Fase 5; el
+  botón de cálculo permanece deshabilitado hasta entonces.
 - Los datos futuros dependerán del navegador y dispositivo donde se creen.
 - Identificarse por documento no constituye autenticación segura.
 

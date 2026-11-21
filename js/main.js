@@ -9,11 +9,12 @@ import {
   mostrarErrorAcceso,
   mostrarEstadoAcceso,
 } from "./ui/login.js";
+import { inicializarEvaluaciones } from "./ui/evaluaciones.js";
 
 const vistas = document.querySelectorAll(".view");
-const documentoActivo = document.querySelector("#active-document");
-const mensajeSesion = document.querySelector("#session-message");
-const botonCerrarSesion = document.querySelector("#logout-button");
+const documentosActivos = document.querySelectorAll("[data-active-document]");
+const mensajesSesion = document.querySelectorAll("[data-session-message]");
+const botonesCerrarSesion = document.querySelectorAll('[data-action="logout"]');
 
 function mostrarVista(idVista) {
   vistas.forEach((vista) => {
@@ -21,11 +22,17 @@ function mostrarVista(idVista) {
   });
 }
 
+const reiniciarFlujoNotas = inicializarEvaluaciones(mostrarVista);
+
 function mostrarPanelPrincipal(usuario) {
-  documentoActivo.textContent = usuario.documento;
-  mensajeSesion.textContent = "Tu sesión está activa en esta pestaña.";
-  mensajeSesion.classList.remove("notice-error");
-  mensajeSesion.classList.add("notice-info");
+  documentosActivos.forEach((elemento) => {
+    elemento.textContent = usuario.documento;
+  });
+  mensajesSesion.forEach((mensaje) => {
+    mensaje.textContent = "Tu sesión está activa en esta pestaña.";
+    mensaje.classList.remove("notice-error");
+    mensaje.classList.add("notice-info");
+  });
   mostrarVista("view-configuration");
 }
 
@@ -37,24 +44,35 @@ async function identificar(documento) {
 function manejarCierreSesion() {
   try {
     cerrarSesion();
-    documentoActivo.textContent = "";
-    mensajeSesion.textContent = "";
-    mensajeSesion.classList.remove("notice-error");
-    mensajeSesion.classList.add("notice-info");
+    reiniciarFlujoNotas();
+    documentosActivos.forEach((elemento) => {
+      elemento.textContent = "";
+    });
+    mensajesSesion.forEach((mensaje) => {
+      mensaje.textContent = "";
+      mensaje.classList.remove("notice-error");
+      mensaje.classList.add("notice-info");
+      delete mensaje.dataset.errorCode;
+    });
     mostrarVista("view-access");
     mostrarEstadoAcceso("Sesión cerrada. Ingresa tu documento para continuar.");
   } catch (error) {
     console.error("No fue posible cerrar la sesión.", error);
-    mensajeSesion.textContent =
-      "No fue posible acceder al almacenamiento del navegador. Intenta recargar la página.";
-    mensajeSesion.classList.remove("notice-info");
-    mensajeSesion.classList.add("notice-error");
+    mensajesSesion.forEach((mensaje) => {
+      mensaje.textContent =
+        "No fue posible acceder al almacenamiento del navegador. Intenta recargar la página.";
+      mensaje.classList.remove("notice-info");
+      mensaje.classList.add("notice-error");
+      mensaje.dataset.errorCode = "M-15";
+    });
   }
 }
 
 async function inicializarAplicacion() {
   inicializarLogin(identificar);
-  botonCerrarSesion.addEventListener("click", manejarCierreSesion);
+  botonesCerrarSesion.forEach((boton) => {
+    boton.addEventListener("click", manejarCierreSesion);
+  });
 
   try {
     await abrirBaseDatos();

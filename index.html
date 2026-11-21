@@ -106,50 +106,48 @@
           <div class="session-panel">
             <p>
               <span class="session-label">Documento activo</span>
-              <strong id="active-document"></strong>
+              <strong data-active-document></strong>
             </p>
             <button
-              id="logout-button"
               class="button button-secondary"
+              data-action="logout"
               type="button"
             >
               Cerrar sesión
             </button>
           </div>
           <p
-            id="session-message"
             class="notice notice-info session-message"
+            data-session-message
             role="status"
             aria-live="polite"
           ></p>
           <div class="card">
             <form id="form-configuration" novalidate>
-              <fieldset disabled>
+              <fieldset>
                 <label for="evaluation-count">Cantidad de evaluaciones</label>
                 <input
                   id="evaluation-count"
                   name="cantidad"
-                  type="number"
-                  min="1"
-                  max="20"
-                  step="1"
-                  inputmode="numeric"
+                  type="text"
+                  inputmode="decimal"
                   aria-describedby="configuration-message"
+                  autocomplete="off"
                 >
                 <button class="button button-primary" type="submit">
                   Continuar
                 </button>
-                <button class="button button-secondary" type="button">
-                  Ver historial
-                </button>
               </fieldset>
+              <button class="button button-secondary" type="button" disabled>
+                Ver historial
+              </button>
               <p
                 id="configuration-message"
                 class="notice notice-info"
                 role="status"
                 aria-live="polite"
               >
-                La configuración estará disponible en una fase posterior.
+                Escribe un número entero entre 1 y 20.
               </p>
             </form>
           </div>
@@ -166,28 +164,64 @@
             <h1 id="evaluations-title">Ingresa tus notas y porcentajes</h1>
             <p>La suma de los porcentajes debe completar el 100%.</p>
           </div>
-          <div class="card">
-            <div
-              id="evaluations-list"
-              class="empty-state"
-              aria-live="polite"
+          <div class="session-panel">
+            <p>
+              <span class="session-label">Documento activo</span>
+              <strong data-active-document></strong>
+            </p>
+            <button
+              class="button button-secondary"
+              data-action="logout"
+              type="button"
             >
-              <span class="empty-state-mark" aria-hidden="true">—</span>
-              <p>Los campos de evaluación se generarán dinámicamente.</p>
+              Cerrar sesión
+            </button>
+          </div>
+          <p
+            class="notice notice-info session-message"
+            data-session-message
+            role="status"
+            aria-live="polite"
+          ></p>
+          <div class="card">
+            <div id="evaluations-list" class="evaluations-list">
+              <p class="empty-state">
+                Los campos de evaluación se generarán dinámicamente.
+              </p>
             </div>
+            <p
+              id="percentage-summary"
+              class="notice notice-info"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              Ingresa los porcentajes para revisar su suma.
+            </p>
             <p
               id="evaluations-message"
               class="notice notice-info"
               role="status"
               aria-live="polite"
             >
-              El registro de notas estará disponible en una fase posterior.
+              Puedes corregir los campos o cambiar la cantidad. El cálculo se
+              habilitará en la Fase 5.
             </p>
             <div class="button-row">
-              <button class="button button-secondary" type="button" disabled>
+              <button
+                id="change-quantity-button"
+                class="button button-secondary"
+                type="button"
+              >
                 Cambiar cantidad
               </button>
-              <button class="button button-primary" type="button" disabled>
+              <button
+                id="calculate-button"
+                class="button button-primary"
+                type="button"
+                aria-describedby="evaluations-message"
+                disabled
+              >
                 Calcular definitiva
               </button>
             </div>
