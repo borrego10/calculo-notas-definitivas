@@ -10,11 +10,15 @@ import {
   mostrarEstadoAcceso,
 } from "./ui/login.js";
 import { inicializarEvaluaciones } from "./ui/evaluaciones.js";
+import { inicializarHistorial } from "./ui/historial.js";
+import { inicializarResultados } from "./ui/resultados.js";
 
 const vistas = document.querySelectorAll(".view");
 const documentosActivos = document.querySelectorAll("[data-active-document]");
 const mensajesSesion = document.querySelectorAll("[data-session-message]");
 const botonesCerrarSesion = document.querySelectorAll('[data-action="logout"]');
+let usuarioActivo = null;
+let reiniciarFlujoNotas = () => {};
 
 function mostrarVista(idVista) {
   vistas.forEach((vista) => {
@@ -22,9 +26,31 @@ function mostrarVista(idVista) {
   });
 }
 
-const reiniciarFlujoNotas = inicializarEvaluaciones(mostrarVista);
+function obtenerDocumentoActivo() {
+  return usuarioActivo?.documento ?? null;
+}
+
+const mostrarHistorial = inicializarHistorial(
+  mostrarVista,
+  obtenerDocumentoActivo,
+);
+const mostrarResultado = inicializarResultados(
+  mostrarVista,
+  () => {
+    reiniciarFlujoNotas();
+    mostrarVista("view-configuration");
+  },
+  mostrarHistorial,
+);
+reiniciarFlujoNotas = inicializarEvaluaciones(
+  mostrarVista,
+  obtenerDocumentoActivo,
+  mostrarResultado,
+);
 
 function mostrarPanelPrincipal(usuario) {
+  usuarioActivo = usuario;
+  reiniciarFlujoNotas();
   documentosActivos.forEach((elemento) => {
     elemento.textContent = usuario.documento;
   });
@@ -45,6 +71,7 @@ function manejarCierreSesion() {
   try {
     cerrarSesion();
     reiniciarFlujoNotas();
+    usuarioActivo = null;
     documentosActivos.forEach((elemento) => {
       elemento.textContent = "";
     });

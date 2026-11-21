@@ -520,6 +520,93 @@ input:disabled {
 .result-status {
   margin-bottom: 18px;
   color: var(--color-muted);
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+
+.result-status-approved {
+  color: #18764b;
+}
+
+.result-status-failed {
+  color: #a12c36;
+}
+
+.result-date {
+  margin-bottom: 24px;
+  color: var(--color-muted);
+  font-size: 0.84rem;
+}
+
+.result-detail-title {
+  margin: 0 0 12px;
+  color: var(--color-navy);
+  font-size: 1rem;
+  text-align: left;
+}
+
+.result-evaluations,
+.history-evaluations {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.result-evaluations {
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.evaluation-detail,
+.history-evaluations li {
+  color: var(--color-ink);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.history-record {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: #fbfdff;
+}
+
+.history-record-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.history-record-date {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.history-record-grade {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--color-navy);
+  font-weight: 750;
+}
+
+.history-evaluations {
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
 }
 
 .result-card .button-row {
@@ -615,6 +702,11 @@ input:disabled {
   .session-panel {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .history-record-heading {
+    flex-direction: column;
+    gap: 6px;
   }
 
   .evaluation-fields {

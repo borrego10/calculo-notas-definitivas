@@ -6,6 +6,7 @@ import {
   validarNota,
   validarPorcentaje,
 } from "../services/notaService.js";
+import { calcularYGuardar } from "../services/calculoService.js";
 
 const MENSAJES = {
   "M-03": `La cantidad de evaluaciones debe ser al menos ${MIN_EVALUACIONES}.`,
@@ -17,6 +18,10 @@ const MENSAJES = {
   "M-09": "El porcentaje no puede ser mayor que 100.",
   "M-12": "Completa este campo.",
   "M-13": "Ingresa un valor numérico válido.",
+  "M-14":
+    "No fue posible calcular la nota definitiva. Revisa los datos e intenta de nuevo.",
+  "M-15":
+    "No fue posible acceder al almacenamiento del navegador. Intenta recargar la página.",
 };
 
 const formConfiguracion = document.querySelector("#form-configuration");
@@ -24,7 +29,9 @@ const campoCantidad = document.querySelector("#evaluation-count");
 const mensajeConfiguracion = document.querySelector("#configuration-message");
 const listaEvaluaciones = document.querySelector("#evaluations-list");
 const resumenPorcentajes = document.querySelector("#percentage-summary");
+const mensajeEvaluaciones = document.querySelector("#evaluations-message");
 const botonCambiarCantidad = document.querySelector("#change-quantity-button");
+const botonCalcular = document.querySelector("#calculate-button");
 
 const camposEvaluaciones = [];
 let cantidadActual = 0;
@@ -179,6 +186,13 @@ function crearFila(numero) {
           : validarPorcentaje(campo.entrada.value);
       mostrarErrorCampo(campo, resultado, campo.tipo);
       actualizarResumenPorcentajes();
+      if (mensajeEvaluaciones.dataset.errorCode) {
+        mostrarAviso(
+          mensajeEvaluaciones,
+          "Completa las evaluaciones para calcular tu nota definitiva.",
+          false,
+        );
+      }
     });
   }
 
@@ -264,6 +278,12 @@ function generarEvaluaciones(cantidad, mostrarVista) {
     crearFila(indice + 1),
   );
   listaEvaluaciones.replaceChildren(...filas);
+  mostrarAviso(
+    mensajeEvaluaciones,
+    "Completa las evaluaciones y calcula tu nota definitiva.",
+    false,
+  );
+  botonCalcular.disabled = false;
   actualizarResumenPorcentajes();
   mostrarVista("view-evaluations");
 }
@@ -288,6 +308,101 @@ function manejarCambioCantidad(mostrarVista) {
   campoCantidad.focus();
 }
 
+function validarCamposParaCalculo() {
+  let primerCampoConError = null;
+
+  for (const campo of camposEvaluaciones) {
+    const resultado =
+      campo.tipo === "nota"
+        ? validarNota(campo.entrada.value)
+        : validarPorcentaje(campo.entrada.value);
+    mostrarErrorCampo(campo, resultado, campo.tipo);
+    if (resultado.codigoError && primerCampoConError === null) {
+      primerCampoConError = { campo, resultado };
+    }
+  }
+
+  if (primerCampoConError) {
+    const { campo, resultado } = primerCampoConError;
+    mostrarAviso(
+      mensajeEvaluaciones,
+      `${MENSAJES[resultado.codigoError] ?? MENSAJES["M-13"]} Corrige los campos señalados antes de calcular.`,
+      true,
+      resultado.codigoError,
+    );
+    campo.entrada.focus();
+    return null;
+  }
+
+  actualizarResumenPorcentajes();
+  const codigoSuma = resumenPorcentajes.dataset.errorCode;
+  if (codigoSuma === "M-10" || codigoSuma === "M-11") {
+    mostrarAviso(
+      mensajeEvaluaciones,
+      resumenPorcentajes.textContent,
+      true,
+      codigoSuma,
+    );
+    camposEvaluaciones
+      .find((campo) => campo.tipo === "porcentaje")
+      ?.entrada.focus();
+    return null;
+  }
+
+  const camposNota = camposEvaluaciones.filter(
+    (campo) => campo.tipo === "nota",
+  );
+  const camposPorcentaje = camposEvaluaciones.filter(
+    (campo) => campo.tipo === "porcentaje",
+  );
+  return camposNota.map((campoNota, indice) => ({
+    nota: campoNota.entrada.value,
+    porcentaje: camposPorcentaje[indice].entrada.value,
+  }));
+}
+
+async function manejarCalculo(obtenerDocumentoActivo, mostrarResultado) {
+  const evaluaciones = validarCamposParaCalculo();
+  if (evaluaciones === null) {
+    return;
+  }
+
+  botonCalcular.disabled = true;
+  mostrarAviso(mensajeEvaluaciones, "Calculando…", false);
+
+  let resultado;
+  let codigoAviso = null;
+  try {
+    resultado = await calcularYGuardar(obtenerDocumentoActivo(), evaluaciones);
+  } catch (error) {
+    if (error.code === "M-16" && error.resultado) {
+      resultado = error.resultado;
+      codigoAviso = "M-16";
+    } else {
+      if (error.code !== "M-10" && error.code !== "M-11") {
+        console.error("No fue posible calcular la nota definitiva.", error);
+      }
+      const codigoError =
+        error.code === "M-10" || error.code === "M-11" || MENSAJES[error.code]
+          ? error.code
+          : "M-14";
+      mostrarAviso(
+        mensajeEvaluaciones,
+        codigoError === "M-10" || codigoError === "M-11"
+          ? resumenPorcentajes.textContent
+          : MENSAJES[codigoError],
+        true,
+        codigoError,
+      );
+      return;
+    }
+  } finally {
+    botonCalcular.disabled = false;
+  }
+
+  mostrarResultado(resultado, codigoAviso);
+}
+
 function reiniciarFlujoNotas() {
   cantidadActual = 0;
   intentoConfigurar = false;
@@ -300,6 +415,12 @@ function reiniciarFlujoNotas() {
   mensajeVacio.textContent =
     "Los campos de evaluación se generarán dinámicamente.";
   listaEvaluaciones.replaceChildren(mensajeVacio);
+  botonCalcular.disabled = true;
+  mostrarAviso(
+    mensajeEvaluaciones,
+    "Configura las evaluaciones para iniciar un cálculo.",
+    false,
+  );
   mostrarAviso(
     resumenPorcentajes,
     "Ingresa los porcentajes para revisar su suma.",
@@ -307,7 +428,11 @@ function reiniciarFlujoNotas() {
   );
 }
 
-export function inicializarEvaluaciones(mostrarVista) {
+export function inicializarEvaluaciones(
+  mostrarVista,
+  obtenerDocumentoActivo,
+  mostrarResultado,
+) {
   limpiarErrorConfiguracion();
   formConfiguracion.addEventListener("submit", (evento) => {
     manejarConfiguracion(evento, mostrarVista);
@@ -319,6 +444,9 @@ export function inicializarEvaluaciones(mostrarVista) {
   });
   botonCambiarCantidad.addEventListener("click", () => {
     manejarCambioCantidad(mostrarVista);
+  });
+  botonCalcular.addEventListener("click", () => {
+    void manejarCalculo(obtenerDocumentoActivo, mostrarResultado);
   });
 
   return reiniciarFlujoNotas;

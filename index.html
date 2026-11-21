@@ -138,7 +138,11 @@
                   Continuar
                 </button>
               </fieldset>
-              <button class="button button-secondary" type="button" disabled>
+              <button
+                class="button button-secondary"
+                data-action="history"
+                type="button"
+              >
                 Ver historial
               </button>
               <p
@@ -204,8 +208,7 @@
               role="status"
               aria-live="polite"
             >
-              Puedes corregir los campos o cambiar la cantidad. El cálculo se
-              habilitará en la Fase 5.
+              Completa las evaluaciones para calcular tu nota definitiva.
             </p>
             <div class="button-row">
               <button
@@ -220,7 +223,6 @@
                 class="button button-primary"
                 type="button"
                 aria-describedby="evaluations-message"
-                disabled
               >
                 Calcular definitiva
               </button>
@@ -238,19 +240,53 @@
             <p class="eyebrow">Resultado</p>
             <h1 id="result-title">Tu nota definitiva</h1>
           </div>
+          <div class="session-panel">
+            <p>
+              <span class="session-label">Documento activo</span>
+              <strong data-active-document></strong>
+            </p>
+            <button
+              class="button button-secondary"
+              data-action="logout"
+              type="button"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+          <p
+            class="notice notice-info session-message"
+            data-session-message
+            role="status"
+            aria-live="polite"
+          ></p>
           <div class="card result-card">
             <p class="result-label">Definitiva</p>
-            <p class="result-value" aria-live="polite">—</p>
-            <p class="result-status">El estado se mostrará aquí.</p>
-            <p class="notice notice-info" role="status" aria-live="polite">
-              El cálculo y su almacenamiento se habilitarán en una fase
-              posterior.
+            <p id="result-value" class="result-value" aria-live="polite">—</p>
+            <p id="result-status" class="result-status">
+              El estado se mostrará aquí.
             </p>
+            <p id="result-date" class="result-date"></p>
+            <h2 class="result-detail-title">Detalle de evaluaciones</h2>
+            <ul id="result-evaluations" class="result-evaluations"></ul>
+            <p
+              id="result-message"
+              class="notice notice-info"
+              role="status"
+              aria-live="polite"
+            ></p>
             <div class="button-row">
-              <button class="button button-primary" type="button" disabled>
+              <button
+                id="new-calculation-button"
+                class="button button-primary"
+                type="button"
+              >
                 Nuevo cálculo
               </button>
-              <button class="button button-secondary" type="button" disabled>
+              <button
+                id="result-history-button"
+                class="button button-secondary"
+                type="button"
+              >
                 Ver historial
               </button>
             </div>
@@ -268,17 +304,46 @@
             <h1 id="history-title">Tus cálculos anteriores</h1>
             <p>Solo se mostrarán los resultados asociados a tu documento.</p>
           </div>
-          <div class="card">
-            <div id="history-list" class="empty-state" aria-live="polite">
-              <span class="empty-state-mark" aria-hidden="true">—</span>
-              <p>Aún no hay cálculos para mostrar.</p>
-            </div>
-            <p id="history-message" class="notice notice-info" role="status">
-              La consulta del historial estará disponible en una fase
-              posterior.
+          <div class="session-panel">
+            <p>
+              <span class="session-label">Documento activo</span>
+              <strong data-active-document></strong>
             </p>
-            <button class="button button-secondary" type="button" disabled>
-              Volver
+            <button
+              class="button button-secondary"
+              data-action="logout"
+              type="button"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+          <p
+            class="notice notice-info session-message"
+            data-session-message
+            role="status"
+            aria-live="polite"
+          ></p>
+          <div class="card">
+            <div id="history-list" class="history-list" aria-live="polite">
+              <div class="empty-state">
+                <span class="empty-state-mark" aria-hidden="true">—</span>
+                <p>Aún no hay cálculos para mostrar.</p>
+              </div>
+            </div>
+            <p
+              id="history-message"
+              class="notice notice-info"
+              role="status"
+              aria-live="polite"
+            >
+              Aún no tienes cálculos guardados.
+            </p>
+            <button
+              id="history-back-button"
+              class="button button-secondary"
+              type="button"
+            >
+              Volver a mis evaluaciones
             </button>
           </div>
         </section>
